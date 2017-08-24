@@ -26,6 +26,7 @@
     </div>
     <div class="index-right">
       <!-- <slide-show :slides="slides" :inv="invTime"></slide-show> -->
+      <slide-show :imgList='slideList' :config="slideConfig"></slide-show> 
       <div class="index-board-list">
         <div
         class="index-board-item"
@@ -45,15 +46,19 @@
 </template>
 
 <script>
+import slideShow from "../components/sliderShow"
 export default {
-  // created: function () {
-  //   this.$http.get('api/getNewsList')
-  //   .then((res) => {
-  //     this.newsList = res.data
-  //   }, (err) => {
-  //     console.log(err)
-  //   })
-  // }, 
+  components: {
+    slideShow,
+  },
+  created: function () {
+    this.$http.get('api/getNewsList')
+    .then((res) => {
+      this.newsList = res.data
+    }, (err) => {
+      console.log(err)
+    })
+  }, 
   data () {
     return {
       productList:[{
@@ -72,30 +77,46 @@ export default {
       ],
       boardList: [
         {
-          title: '公屏喊话',
-          description: '大声聊天',
+          title: '英雄联盟',
+          description: '超爽MOBA电竞',
           saleout: false,
-          id:'loud'
+          id:'loud',
+          toKey:"lol"
         },
         {
-          title: '极速运送',
-          description: '快速递送包裹',
+          title: '消逝的光芒',
+          description: '猛干僵尸我们最爱',
           saleout: false,
-          id:'car'
+          id:'car',
+          toKey:"light"
         },
         {
-          title: '世界玩家',
-          description: '世界玩家3万人',
+          title: '神秘海域',
+          description: '飞一样的感觉',
           saleout: false,
-          id: 'earth'
+          id: 'earth',
+          toKey:'callofdely'
         },
         {
-          title: '排行榜',
+          title: '使命召唤',
           description: '精英玩家俱乐部',
           saleout: false,
-          id: 'hill'
+          id: 'hill',
+          toKey:'shenmi'
         }
-      ]
+      ],
+      slideList:[
+        {id:1,url:require('../assets/slideShow/1.jpg'),href:"detail/lol"},
+        {id:2,url:require('../assets/slideShow/2.jpg'),href:"detail/shenmi"},
+        {id:3,url:require('../assets/slideShow/3.png'),href:"detail/callofdely"},
+        {id:4,url:require('../assets/slideShow/4.jpg'),href:"detail/light"},
+        {id:5,url:require('../assets/slideShow/5.jpg')},
+      ],
+      slideConfig:{
+        autoPlay:true,
+        time:3000,
+        firstImg:1
+      }
     }
   }
 }
@@ -203,6 +224,11 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.button{
+  padding: 5px 10px;
+  background-color: #4fc08d
 }
 </style>
 

@@ -3,13 +3,20 @@
     <div>
         <div class="app-head">
             <div class="app-head-inner">
+              <router-link :to="{ path:'/' }">
                 <img src="../assets/logo.png">
+              </router-link>
                 <div class="head-nav">
-                    <ul class="nav-list">
-                        <li>登录</li>
-                        <li class="nav-pile">注册</li>
-                        <li class="nav-pile">关于</li>    
-                    </ul>    
+                    <ul class="nav-list" v-if="!user.logined">
+                        <li @click="loginClick">登录</li>
+                        <li class="nav-pile" @click="regClick">注册</li>
+                        <li class="nav-pile" @click="aboutClick">关于</li>    
+                    </ul>
+                    <ul class="logined" v-if="user.logined">
+                     <li>{{user.data.name}}</li>
+                     <li class="nav-pile">个人信息</li>
+                     <li class="nav-pile" @click="loginOut">注销</li>
+                     </ul>    
                 </div>    
             </div>
         </div> 
@@ -23,17 +30,69 @@
         <div class="app-foot">
             <p>
             © 2017 zhangzhengyi12 MIT</p>
-        </div> 
+        </div>
+        <my-diglog :isShow="isShowLoginDialog" @on-close="closeDialogBox('Login')" >
+          <login-form @on-login="sendLogin"></login-form>
+         </my-diglog>
+        <my-diglog :isShow="isShowRegDialog" @on-close="closeDialogBox('Reg')">
+          <reg-form></reg-form>
+        </my-diglog>
+        <my-diglog :isShow="isShowAboutDialog" @on-close="closeDialogBox('About')">
+         <p>警告：该程序受版权法和国际公约的保护。未经授权而复制或分发该程序或其任何部分，将导致严重的民事和刑事处罚，并将遭受法律范围内最大限度的处罚。</p>
+         </my-diglog>
+         
    </div> 
 
 </template>
 
 <script>
+import diglog from "../components/dialog"
+import loginForm from "./logForm"
+import regForm from "./regForm"
+
 export default {
+  components: {
+    myDiglog:diglog,
+    loginForm,
+    regForm
+  },
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      isShowLoginDialog:false,
+      isShowRegDialog:false,
+      isShowAboutDialog:false,
+      user:{
+        logined:false,
+        data:{}
+      }
     }
+  },
+  methods: {
+   closeDialogBox(type){
+     this['isShow'+type+'Dialog'] = false
+   },
+   loginClick(){
+     this.isShowLoginDialog = true
+   },
+   regClick(){
+     this.isShowRegDialog = true
+   },
+   aboutClick(){
+     this.isShowAboutDialog  = true 
+   },
+   sendLogin(e){
+     this.$http.get("/api/login")
+     .then((res)=>{
+       this.user.logined = true;
+       this.user.data = res.data
+       this.isShowLoginDialog = false;
+     },(error)=>{
+       console.log(error);
+     })
+   },
+   loginOut(){
+     this.user.logined = false;
+   }
   }
 }
 </script>
